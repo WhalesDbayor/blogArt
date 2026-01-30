@@ -32,6 +32,11 @@ const createBlog = async (req, res) => {
   try {
     const { title, description, content, imageUrl } = req.body;
 
+    // const userId = req.params.userId;
+    // if (!userId) {
+    //   return res.status(400).json({message: 'User ID is required to create a blog'});
+    // }
+
     if (!title || !description || !content) {
       return res.status(400).json({message: 'Title, description and content are required'});
     }
