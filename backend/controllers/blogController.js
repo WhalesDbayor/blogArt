@@ -1,3 +1,5 @@
+const Blog = require("../schema/blogSchema");
+
 const getBlogs = (req, res) => {
   res.json({message: 'Get all blogs'});
 }
@@ -7,8 +9,20 @@ const getBlogById = (req, res) => {
   res.json({message: `Get blog with ID: ${id}`});
 }
 
-const createBlog = (req, res) => {
-  res.json({message: 'Create a new blog'});
+// Create a blog
+const createBlog = async (req, res) => {
+  try {
+    const { title, description, content, imageUrl } = req.body;
+
+    if (!title || !description || !content) {
+      return res.status(400).json({message: 'Title, description and content are required'});
+    }
+    const newBlog = new Blog({ title, description, content, imageUrl });
+    await newBlog.save();
+    res.status(201).json({message: 'Blog created successfully'});
+  } catch (error) {
+    res.status(500).json({message: 'Error creating blog', error: error.message});
+  }
 }
 
 const updateBlog = (req, res) => {
