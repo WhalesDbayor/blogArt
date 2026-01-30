@@ -1,12 +1,30 @@
 const Blog = require("../schema/blogSchema");
 
-const getBlogs = (req, res) => {
-  res.json({message: 'Get all blogs'});
+// Get all blogs
+const getBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find();
+    if (blogs.length === 0) {
+      return res.status(404).json({message: 'No blogs found'});
+    }
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(500).json({message: 'Error fetching blogs', error: error.message});
+  }
 }
 
-const getBlogById = (req, res) => {
+// Get blog by ID
+const getBlogById = async (req, res) => {
   const { id } = req.params;
-  res.json({message: `Get blog with ID: ${id}`});
+  try {
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(404).json({message: 'Blog not found'});
+    }
+    res.status(200).json(blog);
+  } catch (error) {
+    res.status(500).json({message: 'Error fetching blog', error: error.message});
+  }
 }
 
 // Create a blog
@@ -25,15 +43,33 @@ const createBlog = async (req, res) => {
   }
 }
 
-const updateBlog = (req, res) => {
+// Update a blog
+const updateBlog = async (req, res) => {
   const { id } = req.params;
-  res.json({message: `Update blog with ID: ${id}`});
-}
-const deleteBlog = (req, res) => {
-  const { id } = req.params;
-  res.json({message: `Delete blog with ID: ${id}`});
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(id, req.body, { new: true });
+    if (!updatedBlog) {
+      return res.status(404).json({message: 'Blog not found'});
+    }
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    res.status(500).json({message: 'Error updating blog', error: error.message});
+  }
 }
 
+// Delete a blog
+const deleteBlog = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const blog = await Blog.findByIdAndDelete(id);
+    if (!blog) {
+      return res.status(404).json({message: 'Blog not found'});
+    }
+    res.status(200).json({message: 'Blog deleted successfully'});
+  } catch (error) {
+    res.status(500).json({message: 'Error deleting blog', error: error.message});
+  }
+}
 module.exports = {
   getBlogs,
   getBlogById,
