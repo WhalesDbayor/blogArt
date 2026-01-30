@@ -1,6 +1,7 @@
 const express = require('express');
 const blogRouter = require('./routers/blogRouter');
 const connectionDB = require('./mongoDB/dbconnection');
+const userRouter = require('./routers/userRouter');
 require('dotenv').config();
 
 connectionDB();
@@ -15,6 +16,7 @@ server.use(express.urlencoded({ extended: true }));
 
 // Routers
 server.use('/', blogRouter);
+server.use('/', userRouter);
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
